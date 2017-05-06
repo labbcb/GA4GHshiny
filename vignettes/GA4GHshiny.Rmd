@@ -1,0 +1,74 @@
+---
+title: "GA4GHshiny"
+author: "Welliton Souza"
+date: '`r Sys.Date()`'
+package: "`r pkg_ver('GA4GHshiny')`"
+output: 
+  BiocStyle::html_document
+vignette: >
+  %\VignetteIndexEntry{GA4GHshiny}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+bibliography: bibliography.bib
+---
+
+# Introduction
+
+The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) (GA4GH) was formed to help accelerate the potential of genomic medicine to advance human health.
+It brings together over 400 leading institutions working in healthcare, research, disease advocacy, life science, and information technology.
+The [Data Working Group](http://ga4gh.org/#/) of the GA4GH developed [data model schemas](https://github.com/ga4gh/schemas) and application program interfaces (APIs) for genomic data.
+These APIs are specifically designed to allow sharing of genomics data in a standardized manner and without having to exchange complete experiments.
+They developed a [reference implementation for these APIs](https://github.com/ga4gh/server) providing a web server for hosting genomic data.
+
+We developed the `r Biocpkg("GA4GHclient")` package for retrieving and integrating genomic data from GA4GH-based databases. __GA4GHshiny__ is a companion package providing graphical user interface based on web technologies for easly interacting with GA4GH-based databases such as [Thousand Genomes](http://1kgenomes.ga4gh.org/) and [BRCA Exchange](http://brcaexchange.org/).
+The web interface integrates with [Beacon Network](https://beacon-network.org/#/) providing a list of databases which have the user selected genomic variant [@ga4gh].
+It was developed using [Shiny](https://shiny.rstudio.com/) and related packages.
+
+The package has only one function called `app`, which runs the web application.
+It can be done within RStudio however the Beacon Network integration may not work.
+To solve this problem click in "Open in Browser" button at the top of the window.
+For example, the code below runs application connected at http://1kgenomes.ga4gh.org/.
+
+``` r
+library(org.Hs.eg.db)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(GA4GHshiny)
+app(host = "http://1kgenomes.ga4gh.org/",
+    serverName = "Hosting Thousand Genomes Project",
+    orgDb = "org.Hs.eg.db",
+    txDb = "TxDb.Hsapiens.UCSC.hg19.knownGene")
+```
+
+The `host` argument defines which GA4GH-based data server to connect.
+This is the only required argument.
+There are some database endpoints available.
+
+- [Hosting Thousand Genomes Project](http://1kgenomes.ga4gh.org/)
+- [Ensembl REST API](https://rest.ensembl.org/)
+- [BRCA Exchange GA4GH API](http://brcaexchange.org/backend/data/ga4gh/v0.6.0a7/)
+
+The value of `serverName` argument will show at the top bar of the interface.
+If not defined it will show the value of `host`.
+
+The `orgDb` and the `txDb` package names are necessary for searching by gene symbol and by genomic feature such as exons and transcripts.
+The TxDb package version should be the same of the reference genome used by database.
+
+# Deploying web application
+
+__GA4GHshiny__ application can be executed as web site through [Shiny Server](https://www.rstudio.com/products/shiny/shiny-server/).
+Create an `app.R` file inside ShinyServer application directory adding the text below.
+For example `/srv/shiny-server/1kgenomes/app.R`.
+
+``` r
+library(org.Hs.eg.db)
+library(TxDb.Hsapiens.UCSC.hg19.knownGene)
+library(GA4GHshiny)
+app(host = "http://1kgenomes.ga4gh.org/",
+    serverName = "Hosting Thousand Genomes Project",
+    orgDb = "org.Hs.eg.db",
+    txDb = "TxDb.Hsapiens.UCSC.hg19.knownGene")
+```
+
+The web application will be available at http://localhost:3838/1kgenomes/.
+
+# References
