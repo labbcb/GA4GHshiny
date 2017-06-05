@@ -2,8 +2,7 @@ server <- function(data) {
     shinyServer(function(input, output, session) {
         
         # appearence
-        shinyjs::html(selector = ".logo", html = paste(data$serverName,
-            ifelse(data$host == data$serverName, "", paste("-", data$host))))
+        shinyjs::html(selector = ".logo", html = data$serverName)
         
         # Dataset input list initialization
         choices <- data$datasets$id
