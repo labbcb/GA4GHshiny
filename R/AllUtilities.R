@@ -87,6 +87,10 @@ searchVariantsByGeneSymbol <- function(host, variantSetId, seqlevelsStyle,
     df <- AnnotationDbi::select(orgDb, keys = geneSymbol,
         columns = c("SYMBOL", "ENTREZID"), keytype = "SYMBOL")
     granges <- feature(txDb, filter = list(gene_id = df$ENTREZID))
+    if (length(granges) == 0) {
+        return(NULL)
+    }
+    
     seqlevelsStyle(granges) <- seqlevelsStyle
     
     variants <- searchVariantsByGRanges(host = host,

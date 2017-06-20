@@ -1,7 +1,7 @@
 Package: GA4GHshiny
 Type: Package
 Title: Shiny application for interacting with GA4GH-based data servers
-Version: 0.99.4
+Version: 0.99.5
 Authors@R: c(person("Welliton", "Souza", email = "well309@gmail.com",
         role = c("aut", "cre")), person("Benilton", "Carvalho", email =
         "benilton@unicamp.br", role = "ctb"), person("Cristiane",

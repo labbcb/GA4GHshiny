@@ -31,6 +31,8 @@ server <- function(data) {
         # This action will initialize Variant data table
         variants <- eventReactive(input$search,  {
             validate(
+                need(input$referenceName != "Select",
+                    "Reference Name should be informed."),
                 need(!is.na(input$start), "Start should be informed."),
                 need(!is.na(input$end), "End should be informed.")
             )
@@ -42,7 +44,6 @@ server <- function(data) {
                     geneSymbol = input$geneSymbol, orgDb = data$orgDb,
                     txDb = data$txDb,
                     feature = genomicFeatures[[input$genomicFeature]])
-                
             } else {
                 data$variants <- searchVariants(
                     host = data$host,
@@ -51,6 +52,12 @@ server <- function(data) {
                     start = input$start,
                     end = input$end,
                     asVCF = FALSE)
+            }
+            if (nrow(data$variants) == 0) {
+                showModal(modalDialog(paste0("No variant found at genomic position ",
+                    input$referenceName, ":", input$start, "-", input$end, "."),
+                    easyClose = TRUE))
+                return()
             }
             table <- tidyVariants(data$variants)
             DT::datatable(table, selection = list(mode = "single", selected = 1,
@@ -81,7 +88,8 @@ server <- function(data) {
                 return()
             data <- initializeReferences(data, input$variantSetId)
             updateSelectizeInput(session, "referenceName",
-                choices = data$references$name)
+                choices = c("Select" = "Select", data$references$name),
+                selected = "Select")
             shinyjs::enable("referenceName")
             shinyjs::enable("start")
             shinyjs::enable("end")
@@ -91,15 +99,21 @@ server <- function(data) {
         # Gene symbol input list selection action
         # Reference Name, Start and End will change
         observeEvent(input$geneSymbol, {
-            geneSymbol <- input$geneSymbol
-            if (geneSymbol == "" || geneSymbol  == "Select")
+            if (input$geneSymbol == "" || input$geneSymbol  == "Select")
                 return()
-            gene <- getGene(geneSymbol, data$orgDb, data$txDb)
-            if (length(gene) == 0)
+            gene <- getGene(input$geneSymbol, data$orgDb, data$txDb)
+            if (length(gene) == 0) {
+                showModal(modalDialog(paste0("Gene symbol '", input$geneSymbol,
+                    "' not available for this version of the reference genome."),
+                    easyClose = TRUE))
+                updateSelectizeInput(session, "referenceName", selected = "Select")
+                updateNumericInput(session, "start", value = "")
+                updateNumericInput(session, "end", value = "")
                 return()
+            }
             if (length(gene) > 1) {
-                warning(paste("Found more than one genomic location for",
-                    gene, "gene. Using the first."))
+                warning(paste0("Found more than one genomic location for '",
+                    input$geneSymbol, "' gene. Using the first."))
                 gene <- gene[1]
             }
             seqlevelsStyle(gene) <- data$seqlevelsStyle
