@@ -1,10 +1,12 @@
 ---
-title: "GA4GHshiny"
-author: "Welliton Souza"
-date: '`r Sys.Date()`'
-package: "`r pkg_ver('GA4GHshiny')`"
+title: GA4GHshiny
+author:
+- name: Welliton Souza
+  affiliation: University of Campinas, Campinas, Brazil
+package: GA4GHshiny
 output: 
-  BiocStyle::html_document
+  BiocStyle::html_document2:
+    toc_float: true
 vignette: >
   %\VignetteIndexEntry{GA4GHshiny}
   %\VignetteEngine{knitr::rmarkdown}
@@ -70,5 +72,11 @@ app(host = "http://1kgenomes.ga4gh.org/",
 ```
 
 The web application will be available at http://localhost:3838/1kgenomes/.
+
+# Session Information
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
 
 # References
