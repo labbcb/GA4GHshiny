@@ -24,11 +24,10 @@
 #' @importFrom methods new
 #' @importFrom purrr is_list map_chr map_df map_if map_int map_lgl
 #' @importFrom S4Vectors DataFrame
-#' @importFrom shiny shinyApp numericInput selectizeInput fluidRow column
+#' @importFrom shiny shinyApp numericInput selectizeInput fluidPage fluidRow column
 #'     actionButton observeEvent eventReactive updateSelectizeInput radioButtons
-#'     shinyServer shinyUI validate need updateNumericInput hr htmlOutput
-#'     renderUI tags
-#' @importFrom shinydashboard dashboardPage dashboardHeader dashboardSidebar
-#'     dashboardBody box
+#'     shinyServer validate need updateNumericInput hr htmlOutput
+#'     renderUI tags uiOutput tabsetPanel tabPanel wellPanel navbarPage textOutput h1 span
+#' @importFrom shinythemes shinytheme
 #' @importFrom tidyr unnest_
 NULL
