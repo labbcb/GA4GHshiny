@@ -1,15 +1,13 @@
 server <- function(data) {
     shinyServer(function(input, output, session) {
-        
-        # appearence
-        shinyjs::html(selector = ".logo", html = data$serverName)
+        output$title <-  renderText(data$serverName)
         
         # Dataset input list initialization
         choices <- data$datasets$id
         names(choices) <- data$datasets$name
         updateSelectizeInput(session, 'datasetId', choices = choices)
         shinyjs::enable("datasetId")
-
+        
         # Gene symbol input list initialization
         if (!is.null(data$orgDb) && !is.na(data$orgDb)) {
             genomicFeatures <- list(
@@ -22,17 +20,17 @@ server <- function(data) {
             choices <- getGeneSymbols(data$orgDb)
             choices <- c("Select" = "Select", choices)
             updateSelectizeInput(session, "geneSymbol", choices = choices,
-                selected = "Select", server = TRUE)
-
+                                 selected = "Select", server = TRUE)
+            
             shinyjs::enable("geneSymbol")
         }
-
+        
         # Search button click action
         # This action will initialize Variant data table
         variants <- eventReactive(input$search,  {
             validate(
                 need(input$referenceName != "Select",
-                    "Reference Name should be informed."),
+                     "Reference Name should be informed."),
                 need(!is.na(input$start), "Start should be informed."),
                 need(!is.na(input$end), "End should be informed.")
             )
@@ -55,20 +53,20 @@ server <- function(data) {
             }
             if (nrow(data$variants) == 0) {
                 showModal(modalDialog(paste0("No variant found at genomic position ",
-                    input$referenceName, ":", input$start, "-", input$end, "."),
-                    easyClose = TRUE))
+                                             input$referenceName, ":", input$start, "-", input$end, "."),
+                                      easyClose = TRUE))
                 return()
             }
             table <- tidyVariants(data$variants)
             DT::datatable(table, selection = list(mode = "single", selected = 1,
-                target = "row"), escape = FALSE,
-                options = list(scrollX = TRUE))
+                                                  target = "row"), escape = FALSE,
+                          options = list(scrollX = TRUE))
         })
-
+        
         output$dt.variants <- DT::renderDataTable({
             variants()
         })
-
+        
         # Variant set input list initialization
         # It depends on Dataset input list selection
         observeEvent(input$datasetId, {
@@ -80,7 +78,7 @@ server <- function(data) {
             updateSelectizeInput(session, "variantSetId", choices = choices)
             shinyjs::enable("variantSetId")
         })
-
+        
         # Reference Name input list initialization
         # It depends on Variant set input list selection
         observeEvent(input$variantSetId, {
@@ -88,14 +86,14 @@ server <- function(data) {
                 return()
             data <- initializeReferences(data, input$variantSetId)
             updateSelectizeInput(session, "referenceName",
-                choices = c("Select" = "Select", data$references$name),
-                selected = "Select")
+                                 choices = c("Select" = "Select", data$references$name),
+                                 selected = "Select")
             shinyjs::enable("referenceName")
             shinyjs::enable("start")
             shinyjs::enable("end")
             shinyjs::enable("search")
         })
-
+        
         # Gene symbol input list selection action
         # Reference Name, Start and End will change
         observeEvent(input$geneSymbol, {
@@ -104,8 +102,8 @@ server <- function(data) {
             gene <- getGene(input$geneSymbol, data$orgDb, data$txDb)
             if (length(gene) == 0) {
                 showModal(modalDialog(paste0("Gene symbol '", input$geneSymbol,
-                    "' not available for this version of the reference genome."),
-                    easyClose = TRUE))
+                                             "' not available for this version of the reference genome."),
+                                      easyClose = TRUE))
                 updateSelectizeInput(session, "referenceName", selected = "Select")
                 updateNumericInput(session, "start", value = "")
                 updateNumericInput(session, "end", value = "")
@@ -113,7 +111,7 @@ server <- function(data) {
             }
             if (length(gene) > 1) {
                 warning(paste0("Found more than one genomic location for '",
-                    input$geneSymbol, "' gene. Using the first."))
+                               input$geneSymbol, "' gene. Using the first."))
                 gene <- gene[1]
             }
             seqlevelsStyle(gene) <- data$seqlevelsStyle
@@ -131,11 +129,11 @@ server <- function(data) {
             if (data$referenceSet$name == "NCBI37")
                 data$referenceSet$name <- "GRCh37"
             src <- paste0("https://beacon-network.org:443/#/widget?",
-                "rs=", data$referenceSet$name,
-                "&chrom=", data$variant$referenceName,
-                "&pos=", data$variant$start,
-                "&ref=", data$variant$referenceBases,
-                "&allele=", data$variant$alternateBases)
+                          "rs=", data$referenceSet$name,
+                          "&chrom=", data$variant$referenceName,
+                          "&pos=", data$variant$start,
+                          "&ref=", data$variant$referenceBases,
+                          "&allele=", data$variant$alternateBases)
             tags$iframe(src = src, width = "100%", height = "500px")
         })
     })
