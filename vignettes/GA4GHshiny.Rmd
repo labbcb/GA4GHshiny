@@ -1,10 +1,12 @@
 ---
-title: "GA4GHshiny"
-author: "Welliton Souza"
-date: '`r Sys.Date()`'
-package: "`r pkg_ver('GA4GHshiny')`"
+title: GA4GHshiny
+author:
+    name: Welliton Souza
+    affiliation: University of Campinas, Campinas, Brazil
+package: GA4GHshiny
 output: 
-  BiocStyle::html_document
+  BiocStyle::html_document2:
+    toc_float: true
 vignette: >
   %\VignetteIndexEntry{GA4GHshiny}
   %\VignetteEngine{knitr::rmarkdown}
@@ -12,11 +14,11 @@ vignette: >
 bibliography: bibliography.bib
 ---
 
-# Intduction
+# Introduction
 
 The [Global Alliance for Genomics and Health](http://genomicsandhealth.org/) (GA4GH) was formed to help accelerate the potential of genomic medicine to advance human health.
 It brings together over 400 leading institutions working in healthcare, research, disease advocacy, life science, and information technology.
-The [Data Working Gup](http://ga4gh.org/#/) of the GA4GH developed [data model schemas](https://github.com/ga4gh/schemas) and application pgram interfaces (APIs) for genomic data.
+The [Data Working Group](http://ga4gh.org/#/) of the GA4GH developed [data model schemas](https://github.com/ga4gh/schemas) and application program interfaces (APIs) for genomic data.
 These APIs are specifically designed to allow sharing of genomics data in a standardized manner and without having to exchange complete experiments.
 They developed a [reference implementation for these APIs](https://github.com/ga4gh/server) providing a web server for hosting genomic data.
 
@@ -70,5 +72,11 @@ app(host = "http://1kgenomes.ga4gh.org/",
 ```
 
 The web application will be available at http://localhost:3838/1kgenomes/.
+
+# Session Information
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
 
 # References
