@@ -1,7 +1,5 @@
 server <- function(data) {
     shinyServer(function(input, output, session) {
-        output$title <-  renderText(data$serverName)
-        
         # Dataset input list initialization
         choices <- data$datasets$id
         names(choices) <- data$datasets$name

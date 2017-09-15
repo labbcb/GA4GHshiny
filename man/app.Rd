@@ -4,7 +4,8 @@
 \alias{app}
 \title{Open web application}
 \usage{
-app(host, orgDb = NA_character_, txDb = NA_character_, serverName = host)
+app(host, orgDb = NA_character_, txDb = NA_character_,
+  serverName = "GA4GHshiny")
 }
 \arguments{
 \item{host}{Character vector of an URL of GA4GH API data server endpoint.}
@@ -13,8 +14,7 @@ app(host, orgDb = NA_character_, txDb = NA_character_, serverName = host)
 
 \item{txDb}{character vector of a TxDb package.}
 
-\item{serverName}{character vector of the server name. It will be the
-\code{host} by default.}
+\item{serverName}{character vector of the server name. Default: GA4GHshiny.}
 }
 \value{
 Shiny application object.
