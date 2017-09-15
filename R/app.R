@@ -18,7 +18,7 @@
 #' }
 #' @export app
 app <- function(host, orgDb = NA_character_, txDb = NA_character_,
-    serverName = host) {
+                serverName = host) {
     if (!is.na(orgDb) || !is.na(txDb)) {
         if (is.na(orgDb) || is.na(txDb))
             stop("Both orgDb and TxDb packages should be informed or none of them.")

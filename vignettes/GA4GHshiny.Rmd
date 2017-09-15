@@ -1,8 +1,8 @@
 ---
 title: GA4GHshiny
 author:
-- name: Welliton Souza
-  affiliation: University of Campinas, Campinas, Brazil
+    name: Welliton Souza
+    affiliation: University of Campinas, Campinas, Brazil
 package: GA4GHshiny
 output: 
   BiocStyle::html_document2:
