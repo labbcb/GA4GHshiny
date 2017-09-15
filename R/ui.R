@@ -1,15 +1,16 @@
 ui <- navbarPage(title = textOutput("title", container = span),
     theme = "GA4GHshiny/bootstrap.css",
     selected = 1,
-    shinyjs::useShinyjs(),
     tabPanel("Search Variants", value = 1, fluidRow(
+        shinyjs::useShinyjs(),
         column(2, wellPanel(shinyjs::disabled(
             selectizeInput("datasetId", "Dataset", choices = NULL),
             selectizeInput("variantSetId", "Variant Set", choices = NULL),
             hr(), 
             selectizeInput("geneSymbol", "Gene Symbol", choices = NULL),
             radioButtons("genomicFeature", "Genomic Feature",
-            choices = c("Genes", "Transcripts", "Exons", "CDS","Promoters")),
+                choices = c("Genes", "Transcripts", "Exons", "CDS",
+                "Promoters")),
             hr(),
             selectizeInput("referenceName", "Reference Name", choices=NULL),
             numericInput("start", "Start", value = NA_integer_),
