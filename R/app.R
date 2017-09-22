@@ -6,8 +6,7 @@
 #' @param host Character vector of an URL of GA4GH API data server endpoint.
 #' @param orgDb character vector of an org.Db package.
 #' @param txDb character vector of a TxDb package.
-#' @param serverName character vector of the server name. It will be the
-#' \code{host} by default.
+#' @param serverName character vector of the server name. Default: GA4GHshiny.
 #' @return Shiny application object.
 #' @examples
 #' if (interactive()) {
@@ -18,7 +17,7 @@
 #' }
 #' @export app
 app <- function(host, orgDb = NA_character_, txDb = NA_character_,
-                serverName = host) {
+                serverName = "GA4GHshiny") {
     if (!is.na(orgDb) || !is.na(txDb)) {
         if (is.na(orgDb) || is.na(txDb))
             stop("Both orgDb and TxDb packages should be informed or none of them.")
@@ -32,5 +31,5 @@ app <- function(host, orgDb = NA_character_, txDb = NA_character_,
     data$txDb <- txDb
     data$serverName <- serverName
     data$datasets <- searchDatasets(data$host)
-    shinyApp(ui, server(data))
+    shinyApp(ui(data), server(data))
 }
