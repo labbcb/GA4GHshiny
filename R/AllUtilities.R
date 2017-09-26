@@ -65,7 +65,8 @@ tidyVariants <- function(variants)
             hgvs = ~HGVSnames(start, referenceBases, alternateBases)
         ) %>%
         mutate_if(is.numeric, round, digits = 4) %>%
-        select_(.dots = cols.selected)
+        select_(.dots = cols.selected) %>%
+        mutate_if(is.list, unlist)
 }
     
 # This function returns a list of available genes symbols from an org.Db object. 

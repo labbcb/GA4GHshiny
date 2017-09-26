@@ -143,8 +143,9 @@ server <- function(data) {
                 "results.txt"
             },
             content = function(file) {
-                write.table(data$variants, file, quote = FALSE, sep = '\t',
-                    row.names = FALSE, col.names = TRUE)
+                write.table(tidyVariants(data$variants)[, c(-1, -2)], file,
+                    quote = TRUE, sep = '\t', row.names = FALSE,
+                    col.names = TRUE)
             },
             contentType = "text/tab-separated-values"
         )
