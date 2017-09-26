@@ -28,7 +28,7 @@ server <- function(data) {
         variants <- eventReactive(input$search,  {
             validate(
                 need(input$referenceName != "Select",
-                     "Reference Name should be informed."),
+                    "Reference Name should be informed."),
                 need(!is.na(input$start), "Start should be informed."),
                 need(!is.na(input$end), "End should be informed.")
             )
@@ -54,9 +54,11 @@ server <- function(data) {
                     "No variant found at genomic position ",
                     input$referenceName, ":", input$start, "-", input$end, "."),
                     easyClose = TRUE))
+                shinyjs::hide("download")
                 return()
             }
             table <- tidyVariants(data$variants)
+            shinyjs::show("download")
             DT::datatable(table, selection = list(mode = "single", selected = 1,
                 target = "row"), escape = FALSE, options = list(scrollX = TRUE))
         })
@@ -101,7 +103,7 @@ server <- function(data) {
             if (length(gene) == 0) {
                 showModal(modalDialog(paste0("Gene symbol '", input$geneSymbol,
                     "' not available for this version of the reference genome."
-                    ), easyClose = TRUE))
+                ), easyClose = TRUE))
                 updateSelectizeInput(session, "referenceName",
                     selected = "Select")
                 updateNumericInput(session, "start", value = "")
@@ -135,5 +137,16 @@ server <- function(data) {
                 "&allele=", data$variant$alternateBases)
             tags$iframe(src = src, width = "100%", height = "500px")
         })
+        
+        output$download <- downloadHandler(
+            filename = function() {
+                "results.txt"
+            },
+            content = function(file) {
+                write.table(data$variants, file, quote = FALSE, sep = '\t',
+                    row.names = FALSE, col.names = TRUE)
+            },
+            contentType = "text/tab-separated-values"
+        )
     })
 }  

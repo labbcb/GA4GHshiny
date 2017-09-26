@@ -28,6 +28,7 @@
 #'     column actionButton observeEvent eventReactive updateSelectizeInput 
 #'     radioButtons shinyServer validate need updateNumericInput hr htmlOutput
 #'     renderUI tags uiOutput tabsetPanel tabPanel wellPanel navbarPage
-#'     textOutput h1 span renderText showModal modalDialog
+#'     textOutput h1 span renderText showModal modalDialog downloadButton
+#'     downloadHandler br
 #' @importFrom tidyr unnest_
 NULL
