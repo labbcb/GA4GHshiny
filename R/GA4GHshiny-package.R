@@ -31,4 +31,5 @@
 #'     textOutput h1 span renderText showModal modalDialog downloadButton
 #'     downloadHandler br
 #' @importFrom tidyr unnest_
+#' @importFrom openxlsx write.xlsx
 NULL

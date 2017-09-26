@@ -140,14 +140,12 @@ server <- function(data) {
         
         output$download <- downloadHandler(
             filename = function() {
-                "results.txt"
+                "results.xlsx"
             },
             content = function(file) {
-                write.table(tidyVariants(data$variants)[, c(-1, -2)], file,
-                    quote = TRUE, sep = '\t', row.names = FALSE,
-                    col.names = TRUE)
+                write.xlsx(tidyVariants(data$variants)[, c(-1, -2)], file)
             },
-            contentType = "text/tab-separated-values"
+            contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
     })
 }  

@@ -14,7 +14,7 @@ Description: GA4GHshiny package provides an easy way to interact with
         integrates with Beacon Network.
 License: GPL-3
 Depends: GA4GHclient
-Imports: AnnotationDbi, BiocGenerics, dplyr, DT, GenomeInfoDb,
+Imports: AnnotationDbi, BiocGenerics, dplyr, DT, GenomeInfoDb, openxlsx,
         GenomicFeatures, methods, purrr, S4Vectors, shiny, shinyjs, tidyr
 Suggests: BiocStyle, org.Hs.eg.db, knitr, rmarkdown, testthat,
         TxDb.Hsapiens.UCSC.hg19.knownGene
