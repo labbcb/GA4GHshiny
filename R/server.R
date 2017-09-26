@@ -21,33 +21,44 @@ server <- function(data) {
                 selected = "Select", server = TRUE)
             
             shinyjs::enable("geneSymbol")
+            shinyjs::enable("genesFile")
         }
         
         # Search button click action
         # This action will initialize Variant data table
         variants <- eventReactive(input$search,  {
-            validate(
-                need(input$referenceName != "Select",
-                    "Reference Name should be informed."),
-                need(!is.na(input$start), "Start should be informed."),
-                need(!is.na(input$end), "End should be informed.")
-            )
-            if (input$genomicFeature != "Genes") {
+            if(!is.null(input$genesFile)) {
                 data$variants <- searchVariantsByGeneSymbol(
                     host = data$host,
                     variantSetId = data$variantSet$id,
                     seqlevelsStyle = data$seqlevelsStyle,
-                    geneSymbol = input$geneSymbol, orgDb = data$orgDb,
-                    txDb = data$txDb,
+                    geneSymbol = readLines(input$genesFile$datapath),
+                    orgDb = data$orgDb, txDb = data$txDb,
                     feature = genomicFeatures[[input$genomicFeature]])
             } else {
-                data$variants <- searchVariants(
-                    host = data$host,
-                    variantSetId = data$variantSet$id,
-                    referenceName = input$referenceName,
-                    start = input$start,
-                    end = input$end,
-                    asVCF = FALSE)
+                validate(
+                    need(input$referenceName != "Select",
+                        "Reference Name should be informed."),
+                    need(!is.na(input$start), "Start should be informed."),
+                    need(!is.na(input$end), "End should be informed.")
+                )
+                if (input$genomicFeature != "Genes") {
+                    data$variants <- searchVariantsByGeneSymbol(
+                        host = data$host,
+                        variantSetId = data$variantSet$id,
+                        seqlevelsStyle = data$seqlevelsStyle,
+                        geneSymbol = input$geneSymbol, orgDb = data$orgDb,
+                        txDb = data$txDb,
+                        feature = genomicFeatures[[input$genomicFeature]])
+                } else {
+                    data$variants <- searchVariants(
+                        host = data$host,
+                        variantSetId = data$variantSet$id,
+                        referenceName = input$referenceName,
+                        start = input$start,
+                        end = input$end,
+                        asVCF = FALSE)
+                }
             }
             if (nrow(data$variants) == 0) {
                 showModal(modalDialog(paste0(
@@ -58,6 +69,7 @@ server <- function(data) {
                 return()
             }
             table <- tidyVariants(data$variants)
+            table$`dbSNP ID` <- dbSNPlink(table$`dbSNP ID`)
             shinyjs::show("download")
             DT::datatable(table, selection = list(mode = "single", selected = 1,
                 target = "row"), escape = FALSE, options = list(scrollX = TRUE))
@@ -143,9 +155,25 @@ server <- function(data) {
                 "results.xlsx"
             },
             content = function(file) {
-                write.xlsx(tidyVariants(data$variants)[, c(-1, -2)], file)
+                write.xlsx(tidyVariants(data$variants), file)
             },
             contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         )
+        
+        observeEvent(input$genesFile, {
+            if(!is.null(input$genesFile)) {
+                shinyjs::disable("geneSymbol")
+                shinyjs::disable("referenceName")
+                shinyjs::disable("start")
+                shinyjs::disable("end")
+                shinyjs::enable("genomicFeature")
+            } else {
+                shinyjs::enable("geneSymbol")
+                shinyjs::enable("referenceName")
+                shinyjs::enable("start")
+                shinyjs::enable("end")
+                shinyjs::disable("genomicFeature")
+            }
+        })
     })
 }  

@@ -45,6 +45,8 @@ tidyVariants <- function(variants)
 
     cols.selected <- c("DNA change" = "hgvs", "dbSNP ID" = "names")
 
+    if (!is.null(variants$geneSymbol))
+        cols.selected <- c(cols.selected, "Gene Symbol" = "geneSymbol")
     if (!is.null(variants$featureId))
         cols.selected <- c(cols.selected, "Feature ID" = "featureId")
 
@@ -60,10 +62,7 @@ tidyVariants <- function(variants)
         df <- unnest_(df, unnest_cols = cols, .drop = FALSE)
 
     mutate_all(df, function(x) ifelse(is.na(x), "-", x)) %>%
-        mutate_(
-            names = ~dbSNPlink(names),
-            hgvs = ~HGVSnames(start, referenceBases, alternateBases)
-        ) %>%
+        mutate_(hgvs = ~HGVSnames(start, referenceBases, alternateBases)) %>%
         mutate_if(is.numeric, round, digits = 4) %>%
         select_(.dots = cols.selected) %>%
         mutate_if(is.list, unlist)
@@ -87,7 +86,10 @@ searchVariantsByGeneSymbol <- function(host, variantSetId, seqlevelsStyle,
         
     df <- AnnotationDbi::select(orgDb, keys = geneSymbol,
         columns = c("SYMBOL", "ENTREZID"), keytype = "SYMBOL")
+    df <- df[complete.cases(df), ]
     granges <- feature(txDb, filter = list(gene_id = df$ENTREZID))
+    geneIds <- unlist(feature(txDb, column = "gene_id", 
+        filter = list(gene_id = df$ENTREZID))$gene_id)
     if (length(granges) == 0) {
         return(NULL)
     }
@@ -103,9 +105,17 @@ searchVariantsByGeneSymbol <- function(host, variantSetId, seqlevelsStyle,
             return(0)
         nrow(x)
     }))
+    geneIds <- rep(geneIds, sapply(variants, function(x) {
+        if (is.null(x))
+            return(0)
+        nrow(x)
+    }))
     variants <- variants[!sapply(variants, is.null)]
     variants <- DataFrame(bind_rows(variants))
     variants$featureId <- ids
+    if (length(geneSymbol) > 1) {
+        variants$geneSymbol <- df[match(geneIds, df$ENTREZID), "SYMBOL"]
+    }
     variants
 }
 

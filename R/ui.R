@@ -7,7 +7,9 @@ ui <- function(request) {
             column(2, wellPanel(shinyjs::disabled(
                 selectizeInput("datasetId", "Dataset", choices = NULL),
                 selectizeInput("variantSetId", "Variant Set", choices = NULL),
-                hr(), 
+                hr(),
+                fileInput("genesFile", "Gene Symbols File", 
+                    accept = "text/plain"),
                 selectizeInput("geneSymbol", "Gene Symbol", choices = NULL),
                 radioButtons("genomicFeature", "Genomic Feature",
                     choices = c("Genes", "Transcripts", "Exons", "CDS",

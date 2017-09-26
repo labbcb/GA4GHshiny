@@ -29,7 +29,8 @@
 #'     radioButtons shinyServer validate need updateNumericInput hr htmlOutput
 #'     renderUI tags uiOutput tabsetPanel tabPanel wellPanel navbarPage
 #'     textOutput h1 span renderText showModal modalDialog downloadButton
-#'     downloadHandler br
+#'     downloadHandler br fileInput
+#' @importFrom stats complete.cases
 #' @importFrom tidyr unnest_
 #' @importFrom openxlsx write.xlsx
 NULL
