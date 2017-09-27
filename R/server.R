@@ -24,9 +24,13 @@ server <- function(data) {
             shinyjs::enable("genesFile")
         }
         
+        observeEvent(input$search, {
+            shinyjs::show("message")
+            updateTabsetPanel(session, "inTabset", selected = "panelvariants")
+        })
         # Search button click action
         # This action will initialize Variant data table
-        variants <- eventReactive(input$search,  {
+        variants <- eventReactive(input$search, {
             if(!is.null(input$genesFile)) {
                 data$variants <- searchVariantsByGeneSymbol(
                     host = data$host,
@@ -65,18 +69,18 @@ server <- function(data) {
                     "No variant found at genomic position ",
                     input$referenceName, ":", input$start, "-", input$end, "."),
                     easyClose = TRUE))
+                shinyjs::hide("message")
                 shinyjs::hide("download")
-                updateTabsetPanel(session, "panel", selected = "help")
+                updateTabsetPanel(session, "inTabset", selected = "panelhelp")
                 return()
             }
             table <- tidyVariants(data$variants)
             table$`dbSNP ID` <- dbSNPlink(table$`dbSNP ID`)
+            shinyjs::hide("message")
             shinyjs::show("download")
-            updateTabsetPanel(session, "panel", selected = "variants")
             DT::datatable(table, selection = list(mode = "single", selected = 1,
                 target = "row"), escape = FALSE, options = list(scrollX = TRUE))
         })
-        
         output$dt.variants <- DT::renderDataTable({
             variants()
         })
@@ -149,7 +153,9 @@ server <- function(data) {
                 "&pos=", data$variant$start,
                 "&ref=", data$variant$referenceBases,
                 "&allele=", data$variant$alternateBases)
-            tags$iframe(src = src, width = "100%", height = "500px")
+            tags$div(class="embed-responsive embed-responsive-16by9",
+                tags$iframe(src = src, class="embed-responsive-item",
+                    style = "border:none;"))
         })
         
         output$download <- downloadHandler(

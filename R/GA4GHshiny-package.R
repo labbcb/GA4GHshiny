@@ -29,7 +29,7 @@
 #'     radioButtons shinyServer validate need updateNumericInput hr htmlOutput
 #'     renderUI tags tabsetPanel tabPanel wellPanel navbarPage
 #'     textOutput showModal modalDialog downloadButton em tagList
-#'     downloadHandler br fileInput p updateTabsetPanel a
+#'     downloadHandler br fileInput p updateTabsetPanel a div
 #' @importFrom stats complete.cases
 #' @importFrom tidyr unnest_
 #' @importFrom utils packageVersion
