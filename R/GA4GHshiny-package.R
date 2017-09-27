@@ -27,10 +27,11 @@
 #' @importFrom shiny shinyApp numericInput selectizeInput fluidPage fluidRow
 #'     column actionButton observeEvent eventReactive updateSelectizeInput 
 #'     radioButtons shinyServer validate need updateNumericInput hr htmlOutput
-#'     renderUI tags uiOutput tabsetPanel tabPanel wellPanel navbarPage
-#'     textOutput h1 span renderText showModal modalDialog downloadButton
-#'     downloadHandler br fileInput
+#'     renderUI tags tabsetPanel tabPanel wellPanel navbarPage
+#'     textOutput showModal modalDialog downloadButton em tagList
+#'     downloadHandler br fileInput p updateTabsetPanel a
 #' @importFrom stats complete.cases
 #' @importFrom tidyr unnest_
+#' @importFrom utils packageVersion
 #' @importFrom openxlsx write.xlsx
 NULL

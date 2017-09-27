@@ -66,11 +66,13 @@ server <- function(data) {
                     input$referenceName, ":", input$start, "-", input$end, "."),
                     easyClose = TRUE))
                 shinyjs::hide("download")
+                updateTabsetPanel(session, "panel", selected = "help")
                 return()
             }
             table <- tidyVariants(data$variants)
             table$`dbSNP ID` <- dbSNPlink(table$`dbSNP ID`)
             shinyjs::show("download")
+            updateTabsetPanel(session, "panel", selected = "variants")
             DT::datatable(table, selection = list(mode = "single", selected = 1,
                 target = "row"), escape = FALSE, options = list(scrollX = TRUE))
         })

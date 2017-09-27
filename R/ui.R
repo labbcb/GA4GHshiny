@@ -1,9 +1,9 @@
 ui <- function(request) {
     navbarPage(title = request$serverName,
-        theme = "GA4GHshiny/bootstrap.css",
         selected = 1,
         tabPanel("Search Variants", value = 1, fluidRow(
             shinyjs::useShinyjs(),
+            shinythemes::themeSelector(),
             column(2, wellPanel(shinyjs::disabled(
                 selectizeInput("datasetId", "Dataset", choices = NULL),
                 selectizeInput("variantSetId", "Variant Set", choices = NULL),
@@ -21,20 +21,23 @@ ui <- function(request) {
                 hr(),
                 actionButton("search", "Search Variants", class = "btn-primary")
             ))),
-            column(10, tabsetPanel(
-                tabPanel("Variants",
+            column(10, tabsetPanel(id = "panel",
+                tabPanel("Help", value = "help",
+                    br(),
+                    help("helpcontent", request$serverName)
+                ),
+                tabPanel("Variants", value = "variants",
                     br(),
                     DT::dataTableOutput("dt.variants"),
                     br(),
                     shinyjs::hidden(downloadButton(outputId = "download", 
                         label = "Download Results", class = "btn-secondary"))
                 ),
-                tabPanel("Beacon Network",
+                tabPanel("Beacon Network", value = "beacon",
                     br(),
                     htmlOutput("beacon")
                 )
             ))
-        )),
-        tabPanel("About", h1("GA4GHshiny"))
+        ))
     )
 }
