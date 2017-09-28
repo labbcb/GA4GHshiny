@@ -21,46 +21,66 @@ server <- function(data) {
                 selected = "Select", server = TRUE)
             
             shinyjs::enable("geneSymbol")
+            shinyjs::enable("genesFile")
         }
         
+        observeEvent(input$search, {
+            shinyjs::show("message")
+            updateTabsetPanel(session, "inTabset", selected = "panelvariants")
+        })
         # Search button click action
         # This action will initialize Variant data table
-        variants <- eventReactive(input$search,  {
-            validate(
-                need(input$referenceName != "Select",
-                     "Reference Name should be informed."),
-                need(!is.na(input$start), "Start should be informed."),
-                need(!is.na(input$end), "End should be informed.")
-            )
-            if (input$genomicFeature != "Genes") {
+        variants <- eventReactive(input$search, {
+            if(!is.null(input$genesFile)) {
                 data$variants <- searchVariantsByGeneSymbol(
                     host = data$host,
                     variantSetId = data$variantSet$id,
                     seqlevelsStyle = data$seqlevelsStyle,
-                    geneSymbol = input$geneSymbol, orgDb = data$orgDb,
-                    txDb = data$txDb,
+                    geneSymbol = readLines(input$genesFile$datapath),
+                    orgDb = data$orgDb, txDb = data$txDb,
                     feature = genomicFeatures[[input$genomicFeature]])
             } else {
-                data$variants <- searchVariants(
-                    host = data$host,
-                    variantSetId = data$variantSet$id,
-                    referenceName = input$referenceName,
-                    start = input$start,
-                    end = input$end,
-                    asVCF = FALSE)
+                validate(
+                    need(input$referenceName != "Select",
+                        "Reference Name should be informed."),
+                    need(!is.na(input$start), "Start should be informed."),
+                    need(!is.na(input$end), "End should be informed.")
+                )
+                if (input$genomicFeature != "Genes") {
+                    data$variants <- searchVariantsByGeneSymbol(
+                        host = data$host,
+                        variantSetId = data$variantSet$id,
+                        seqlevelsStyle = data$seqlevelsStyle,
+                        geneSymbol = input$geneSymbol, orgDb = data$orgDb,
+                        txDb = data$txDb,
+                        feature = genomicFeatures[[input$genomicFeature]])
+                } else {
+                    data$variants <- searchVariants(
+                        host = data$host,
+                        variantSetId = data$variantSet$id,
+                        referenceName = input$referenceName,
+                        start = input$start,
+                        end = input$end,
+                        asVCF = FALSE)
+                }
             }
             if (nrow(data$variants) == 0) {
                 showModal(modalDialog(paste0(
                     "No variant found at genomic position ",
                     input$referenceName, ":", input$start, "-", input$end, "."),
                     easyClose = TRUE))
+                shinyjs::hide("message")
+                shinyjs::hide("download")
+                updateTabsetPanel(session, "inTabset", selected = "panelhelp")
                 return()
             }
             table <- tidyVariants(data$variants)
+            table$`dbSNP ID` <- dbSNPlink(table$`dbSNP ID`)
+            shinyjs::hide("message")
+            shinyjs::show("download")
             DT::datatable(table, selection = list(mode = "single", selected = 1,
                 target = "row"), escape = FALSE, options = list(scrollX = TRUE))
         })
-        
         output$dt.variants <- DT::renderDataTable({
             variants()
         })
@@ -101,7 +121,7 @@ server <- function(data) {
             if (length(gene) == 0) {
                 showModal(modalDialog(paste0("Gene symbol '", input$geneSymbol,
                     "' not available for this version of the reference genome."
-                    ), easyClose = TRUE))
+                ), easyClose = TRUE))
                 updateSelectizeInput(session, "referenceName",
                     selected = "Select")
                 updateNumericInput(session, "start", value = "")
@@ -133,7 +153,35 @@ server <- function(data) {
                 "&pos=", data$variant$start,
                 "&ref=", data$variant$referenceBases,
                 "&allele=", data$variant$alternateBases)
-            tags$iframe(src = src, width = "100%", height = "500px")
+            tags$div(class="embed-responsive embed-responsive-16by9",
+                tags$iframe(src = src, class="embed-responsive-item",
+                    style = "border:none;"))
+        })
+        
+        output$download <- downloadHandler(
+            filename = function() {
+                "results.xlsx"
+            },
+            content = function(file) {
+                write.xlsx(tidyVariants(data$variants), file)
+            },
+            contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        )
+        
+        observeEvent(input$genesFile, {
+            if(!is.null(input$genesFile)) {
+                shinyjs::disable("geneSymbol")
+                shinyjs::disable("referenceName")
+                shinyjs::disable("start")
+                shinyjs::disable("end")
+                shinyjs::enable("genomicFeature")
+            } else {
+                shinyjs::enable("geneSymbol")
+                shinyjs::enable("referenceName")
+                shinyjs::enable("start")
+                shinyjs::enable("end")
+                shinyjs::disable("genomicFeature")
+            }
         })
     })
 }  
