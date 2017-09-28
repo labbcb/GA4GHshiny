@@ -19,10 +19,6 @@ ui <- function(request) {
                 actionButton("search", "Search Variants", class = "btn-primary")
             ))),
             column(10, tabsetPanel(id = "inTabset",
-                tabPanel("Help", value = "panelhelp",
-                    br(),
-                    help("helpcontent", request$serverName)
-                ),
                 tabPanel("Variants", value = "panelvariants",
                     br(),
                     shinyjs::hidden(
@@ -36,6 +32,10 @@ ui <- function(request) {
                 tabPanel("Beacon Network", value = "panelbeacon",
                     br(),
                     htmlOutput("beacon")
+                ),
+                tabPanel("Help", value = "panelhelp",
+                    br(),
+                    help("helpcontent", request$serverName)    
                 )
             ))
         ))

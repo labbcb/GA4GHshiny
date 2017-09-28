@@ -71,7 +71,6 @@ server <- function(data) {
                     easyClose = TRUE))
                 shinyjs::hide("message")
                 shinyjs::hide("download")
-                updateTabsetPanel(session, "inTabset", selected = "panelhelp")
                 return()
             }
             table <- tidyVariants(data$variants)
