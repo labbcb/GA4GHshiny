@@ -24,6 +24,9 @@ ui <- function(request) {
                     shinyjs::hidden(
                         div(id = "message", class="alert alert-info",
                             p("Searching for genomic variants, please wait."))),
+                    shinyjs::hidden(
+                        div(id = "errormessage", class="alert alert-danger",
+                            p("No variants found."))),
                     DT::dataTableOutput("dt.variants"),
                     br(),
                     shinyjs::hidden(downloadButton(outputId = "download", 
