@@ -25,6 +25,7 @@ server <- function(data) {
         }
         
         observeEvent(input$search, {
+            shinyjs::hide("errormessage")
             shinyjs::show("message")
             updateTabsetPanel(session, "inTabset", selected = "panelvariants")
         })
@@ -65,13 +66,9 @@ server <- function(data) {
                 }
             }
             if (nrow(data$variants) == 0) {
-                showModal(modalDialog(paste0(
-                    "No variant found at genomic position ",
-                    input$referenceName, ":", input$start, "-", input$end, "."),
-                    easyClose = TRUE))
                 shinyjs::hide("message")
                 shinyjs::hide("download")
-                updateTabsetPanel(session, "inTabset", selected = "panelhelp")
+                shinyjs::show("errormessage")
                 return()
             }
             table <- tidyVariants(data$variants)

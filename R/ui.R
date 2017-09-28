@@ -19,15 +19,14 @@ ui <- function(request) {
                 actionButton("search", "Search Variants", class = "btn-primary")
             ))),
             column(10, tabsetPanel(id = "inTabset",
-                tabPanel("Help", value = "panelhelp",
-                    br(),
-                    help("helpcontent", request$serverName)
-                ),
                 tabPanel("Variants", value = "panelvariants",
                     br(),
                     shinyjs::hidden(
                         div(id = "message", class="alert alert-info",
                             p("Searching for genomic variants, please wait."))),
+                    shinyjs::hidden(
+                        div(id = "errormessage", class="alert alert-danger",
+                            p("No variants found."))),
                     DT::dataTableOutput("dt.variants"),
                     br(),
                     shinyjs::hidden(downloadButton(outputId = "download", 
@@ -36,6 +35,10 @@ ui <- function(request) {
                 tabPanel("Beacon Network", value = "panelbeacon",
                     br(),
                     htmlOutput("beacon")
+                ),
+                tabPanel("Help", value = "panelhelp",
+                    br(),
+                    help("helpcontent", request$serverName)    
                 )
             ))
         ))
