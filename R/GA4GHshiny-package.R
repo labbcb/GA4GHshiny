@@ -26,7 +26,7 @@
 #' @importFrom S4Vectors DataFrame
 #' @importFrom shiny shinyApp numericInput selectizeInput fluidPage fluidRow
 #'     column actionButton observeEvent eventReactive updateSelectizeInput 
-#'     radioButtons shinyServer validate need updateNumericInput hr htmlOutput
+#'     radioButtons shinyServer updateNumericInput hr htmlOutput
 #'     renderUI tags tabsetPanel tabPanel wellPanel navbarPage
 #'     textOutput showModal modalDialog downloadButton em tagList
 #'     downloadHandler br fileInput p updateTabsetPanel a div

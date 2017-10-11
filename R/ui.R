@@ -27,6 +27,18 @@ ui <- function(request) {
                     shinyjs::hidden(
                         div(id = "errormessage", class="alert alert-danger",
                             p("No variants found."))),
+                    shinyjs::hidden(
+                        div(id = "refmessage", class="alert alert-warning",
+                            p("Reference Name should be informed."))),
+                    shinyjs::hidden(
+                        div(id = "startmessage", class="alert alert-warning",
+                            p("Start should be informed."))),
+                    shinyjs::hidden(
+                        div(id = "endmessage", class="alert alert-warning",
+                            p("End should be informed."))),
+                    shinyjs::hidden(
+                        div(id = "startendmessage", class="alert alert-warning",
+                            p("Start should be less than or equal to End."))),
                     DT::dataTableOutput("dt.variants"),
                     br(),
                     shinyjs::hidden(downloadButton(outputId = "download", 

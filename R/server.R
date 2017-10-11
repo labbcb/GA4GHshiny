@@ -26,9 +26,14 @@ server <- function(data) {
         
         observeEvent(input$search, {
             shinyjs::hide("errormessage")
+            shinyjs::hide("refmessage")
+            shinyjs::hide("startmessage")
+            shinyjs::hide("endmessage")
+            shinyjs::hide("startendmessage")
             shinyjs::show("message")
             updateTabsetPanel(session, "inTabset", selected = "panelvariants")
         })
+        
         # Search button click action
         # This action will initialize Variant data table
         variants <- eventReactive(input$search, {
@@ -41,12 +46,30 @@ server <- function(data) {
                     orgDb = data$orgDb, txDb = data$txDb,
                     feature = genomicFeatures[[input$genomicFeature]])
             } else {
-                validate(
-                    need(input$referenceName != "Select",
-                        "Reference Name should be informed."),
-                    need(!is.na(input$start), "Start should be informed."),
-                    need(!is.na(input$end), "End should be informed.")
-                )
+                if (input$referenceName == "Select") {
+                    shinyjs::hide("message")
+                    shinyjs::hide("download")
+                    shinyjs::show("refmessage")
+                    return()
+                }
+                if (is.na(input$start)) {
+                    shinyjs::hide("message")
+                    shinyjs::hide("download")
+                    shinyjs::show("startmessage")
+                    return()
+                }
+                if (is.na(input$end)) {
+                    shinyjs::hide("message")
+                    shinyjs::hide("download")
+                    shinyjs::show("endmessage")
+                    return()
+                }
+                if (input$start > input$end) {
+                    shinyjs::hide("message")
+                    shinyjs::hide("download")
+                    shinyjs::show("startendmessage")
+                    return()
+                }
                 if (input$genomicFeature != "Genes") {
                     data$variants <- searchVariantsByGeneSymbol(
                         host = data$host,
