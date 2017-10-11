@@ -5,7 +5,7 @@ author:
     affiliation: University of Campinas, Campinas, Brazil
 package: GA4GHshiny
 output: 
-  BiocStyle::html_document2:
+  BiocStyle::html_document:
     toc_float: true
 vignette: >
   %\VignetteIndexEntry{GA4GHshiny}
