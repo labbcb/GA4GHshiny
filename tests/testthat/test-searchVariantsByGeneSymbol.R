@@ -35,10 +35,11 @@ test_that("searchVariantsByGeneSymbol feature=exons works", {
     datasetId <- searchDatasets(host, nrows = 1)$id
     variantSetId <- searchVariantSets(host, datasetId, nrows = 1)$id
     variants <- searchVariantsByGeneSymbol(host = host, 
-        variantSetId = variantSetId,seqlevelsStyle = "NCBI", geneSymbol = "SCN1A", 
-        "org.Hs.eg.db", "TxDb.Hsapiens.UCSC.hg19.knownGene", feature = exons) 
+        variantSetId = variantSetId, seqlevelsStyle = "NCBI",
+        geneSymbol = "A1BG", orgDb = "org.Hs.eg.db",
+        txDb = "TxDb.Hsapiens.UCSC.hg19.knownGene", feature = exons) 
     expect_s4_class(variants, "DataFrame")
-    expect_equal(dim(variants), c(181, 24))
+    expect_equal(dim(variants), c(140, 24))
 })
 
 test_that("searchVariantsByGeneSymbol feature=cds works", {

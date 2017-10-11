@@ -90,6 +90,10 @@ searchVariantsByGeneSymbol <- function(host, variantSetId, seqlevelsStyle,
     granges <- feature(txDb, filter = list(gene_id = df$ENTREZID))
     geneIds <- unlist(feature(txDb, column = "gene_id", 
         filter = list(gene_id = df$ENTREZID))$gene_id)
+    
+    validExons <- geneIds %in% df$ENTREZID
+    geneIds <-  geneIds[validExons]
+    
     if (length(granges) == 0) {
         return(NULL)
     }
