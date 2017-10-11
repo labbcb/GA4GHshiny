@@ -42,7 +42,8 @@ server <- function(data) {
                     host = data$host,
                     variantSetId = data$variantSet$id,
                     seqlevelsStyle = data$seqlevelsStyle,
-                    geneSymbol = readLines(input$genesFile$datapath),
+                    geneSymbol = toupper(trimws(readLines(
+                        input$genesFile$datapath))),
                     orgDb = data$orgDb, txDb = data$txDb,
                     feature = genomicFeatures[[input$genomicFeature]])
             } else {
