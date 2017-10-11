@@ -1,9 +1,9 @@
 ui <- function(request) {
     navbarPage(title = request$serverName,
+        theme = shinythemes::shinytheme("cerulean"),
         selected = 1,
         tabPanel("Search Variants", value = 1, fluidRow(
             shinyjs::useShinyjs(),
-            shinythemes::themeSelector(),
             column(2, wellPanel(shinyjs::disabled(
                 selectizeInput("datasetId", "Dataset", choices = NULL),
                 selectizeInput("variantSetId", "Variant Set", choices = NULL),
